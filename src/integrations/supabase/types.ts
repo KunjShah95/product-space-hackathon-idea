@@ -14,7 +14,120 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      integrations: {
+        Row: {
+          api_key: string | null
+          config: Json | null
+          created_at: string | null
+          id: string
+          integration_type: string
+          is_active: boolean | null
+          updated_at: string | null
+          user_id: string
+          webhook_url: string | null
+        }
+        Insert: {
+          api_key?: string | null
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          integration_type: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id: string
+          webhook_url?: string | null
+        }
+        Update: {
+          api_key?: string | null
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          integration_type?: string
+          is_active?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+          webhook_url?: string | null
+        }
+        Relationships: []
+      }
+      mentions: {
+        Row: {
+          author: string | null
+          content: string
+          created_at: string | null
+          id: string
+          reach_score: number | null
+          sentiment_score: number | null
+          source: string
+          status: string | null
+          suggested_reply: string | null
+          updated_at: string | null
+          urgency_score: number | null
+          url: string | null
+          user_id: string
+        }
+        Insert: {
+          author?: string | null
+          content: string
+          created_at?: string | null
+          id?: string
+          reach_score?: number | null
+          sentiment_score?: number | null
+          source: string
+          status?: string | null
+          suggested_reply?: string | null
+          updated_at?: string | null
+          urgency_score?: number | null
+          url?: string | null
+          user_id: string
+        }
+        Update: {
+          author?: string | null
+          content?: string
+          created_at?: string | null
+          id?: string
+          reach_score?: number | null
+          sentiment_score?: number | null
+          source?: string
+          status?: string | null
+          suggested_reply?: string | null
+          updated_at?: string | null
+          urgency_score?: number | null
+          url?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          company_name: string | null
+          created_at: string | null
+          email: string
+          full_name: string | null
+          id: string
+          plan_tier: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          company_name?: string | null
+          created_at?: string | null
+          email: string
+          full_name?: string | null
+          id: string
+          plan_tier?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          company_name?: string | null
+          created_at?: string | null
+          email?: string
+          full_name?: string | null
+          id?: string
+          plan_tier?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
