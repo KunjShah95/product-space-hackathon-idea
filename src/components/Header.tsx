@@ -1,9 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -37,10 +39,10 @@ const Header = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-4">
-            <Button variant="outline" size="sm">
+            <Button variant="outline" size="sm" onClick={() => navigate("/auth")}>
               Try for Free
             </Button>
-            <Button size="sm">
+            <Button size="sm" onClick={() => navigate("/auth")}>
               Get Demo
             </Button>
           </div>
@@ -79,10 +81,10 @@ const Header = () => {
                 Contact
               </a>
               <div className="flex flex-col gap-2 pt-4">
-                <Button variant="outline" size="sm" className="w-full">
+                <Button variant="outline" size="sm" className="w-full" onClick={() => navigate("/auth")}>
                   Try for Free
                 </Button>
-                <Button size="sm" className="w-full">
+                <Button size="sm" className="w-full" onClick={() => navigate("/auth")}>
                   Get Demo
                 </Button>
               </div>

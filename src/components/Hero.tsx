@@ -1,9 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Play } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-illustration.jpg";
 import dashboardMock from "@/assets/dashboard-mock.jpg";
 
 const Hero = () => {
+  const navigate = useNavigate();
+  
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-background via-background to-muted py-20 md:py-32">
       <div className="container mx-auto px-4">
@@ -36,12 +39,12 @@ const Hero = () => {
             </ul>
 
             <div className="flex flex-wrap gap-4">
-              <Button size="lg" className="text-lg px-8 hover:scale-105 transition-transform">
+              <Button size="lg" className="text-lg px-8 hover:scale-105 transition-transform" onClick={() => navigate("/auth")}>
                 Get Demo
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 hover:scale-105 transition-transform">
+              <Button size="lg" variant="outline" className="text-lg px-8 hover:scale-105 transition-transform" onClick={() => navigate("/auth")}>
                 <Play className="mr-2 h-5 w-5" />
-                See Live Demo
+                Try for Free
               </Button>
             </div>
 
