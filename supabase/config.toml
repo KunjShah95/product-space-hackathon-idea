@@ -1,1 +1,4 @@
 project_id = "hsgypiegyixcztspvuej"
+
+[functions.monitor-mentions]
+verify_jwt = false

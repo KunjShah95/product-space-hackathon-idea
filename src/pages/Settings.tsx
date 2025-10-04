@@ -16,6 +16,11 @@ interface Integration {
   api_key: string | null;
   webhook_url: string | null;
   is_active: boolean;
+  config?: {
+    client_id?: string;
+    client_secret?: string;
+    bearer_token?: string;
+  };
 }
 
 const integrationIcons: Record<string, any> = {
@@ -26,10 +31,8 @@ const integrationIcons: Record<string, any> = {
 const integrationLabels: Record<string, string> = {
   slack: "Slack",
   twitter: "Twitter/X",
-  zendesk: "Zendesk",
-  jira: "Jira",
-  google_sheets: "Google Sheets",
-  notion: "Notion",
+  reddit: "Reddit",
+  gemini: "Google Gemini AI",
 };
 
 export default function Settings() {
@@ -56,7 +59,10 @@ export default function Settings() {
         .select("*");
 
       if (error) throw error;
-      setIntegrations(data || []);
+      setIntegrations((data || []).map(item => ({
+        ...item,
+        config: typeof item.config === 'object' ? item.config as { client_id?: string; client_secret?: string; bearer_token?: string; } : {}
+      })));
     } catch (error: any) {
       toast({
         variant: "destructive",
@@ -101,6 +107,7 @@ export default function Settings() {
             api_key: integration.api_key,
             webhook_url: integration.webhook_url,
             is_active: integration.is_active,
+            config: integration.config || {},
           }, {
             onConflict: 'user_id,integration_type'
           });
@@ -166,19 +173,6 @@ export default function Settings() {
                   </div>
 
                   <div className="space-y-4 ml-8">
-                    <div className="space-y-2">
-                      <Label htmlFor={`${type}-key`}>API Key</Label>
-                      <Input
-                        id={`${type}-key`}
-                        type="password"
-                        placeholder="Enter your API key"
-                        value={getIntegrationValue(type, "api_key") as string}
-                        onChange={(e) =>
-                          updateIntegration(type, "api_key", e.target.value)
-                        }
-                      />
-                    </div>
-
                     {type === "slack" && (
                       <div className="space-y-2">
                         <Label htmlFor={`${type}-webhook`}>Webhook URL</Label>
@@ -189,6 +183,122 @@ export default function Settings() {
                           value={getIntegrationValue(type, "webhook_url") as string}
                           onChange={(e) =>
                             updateIntegration(type, "webhook_url", e.target.value)
+                          }
+                        />
+                      </div>
+                    )}
+
+                    {type === "twitter" && (
+                      <div className="space-y-2">
+                        <Label htmlFor={`${type}-bearer`}>Bearer Token</Label>
+                        <Input
+                          id={`${type}-bearer`}
+                          type="password"
+                          placeholder="Enter your Twitter Bearer Token"
+                          value={
+                            (integrations.find((i) => i.integration_type === type)?.config?.bearer_token as string) || ""
+                          }
+                          onChange={(e) => {
+                            const existing = integrations.find((i) => i.integration_type === type);
+                            const updated = integrations.map((i) =>
+                              i.integration_type === type
+                                ? { ...i, config: { ...i.config, bearer_token: e.target.value } }
+                                : i
+                            );
+                            if (!existing) {
+                              setIntegrations([...integrations, {
+                                id: crypto.randomUUID(),
+                                integration_type: type,
+                                api_key: null,
+                                webhook_url: null,
+                                is_active: false,
+                                config: { bearer_token: e.target.value }
+                              }]);
+                            } else {
+                              setIntegrations(updated);
+                            }
+                          }}
+                        />
+                      </div>
+                    )}
+
+                    {type === "reddit" && (
+                      <>
+                        <div className="space-y-2">
+                          <Label htmlFor={`${type}-client-id`}>Client ID</Label>
+                          <Input
+                            id={`${type}-client-id`}
+                            type="password"
+                            placeholder="Enter your Reddit Client ID"
+                            value={
+                              (integrations.find((i) => i.integration_type === type)?.config?.client_id as string) || ""
+                            }
+                            onChange={(e) => {
+                              const existing = integrations.find((i) => i.integration_type === type);
+                              const updated = integrations.map((i) =>
+                                i.integration_type === type
+                                  ? { ...i, config: { ...i.config, client_id: e.target.value } }
+                                  : i
+                              );
+                              if (!existing) {
+                                setIntegrations([...integrations, {
+                                  id: crypto.randomUUID(),
+                                  integration_type: type,
+                                  api_key: null,
+                                  webhook_url: null,
+                                  is_active: false,
+                                  config: { client_id: e.target.value }
+                                }]);
+                              } else {
+                                setIntegrations(updated);
+                              }
+                            }}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor={`${type}-client-secret`}>Client Secret</Label>
+                          <Input
+                            id={`${type}-client-secret`}
+                            type="password"
+                            placeholder="Enter your Reddit Client Secret"
+                            value={
+                              (integrations.find((i) => i.integration_type === type)?.config?.client_secret as string) || ""
+                            }
+                            onChange={(e) => {
+                              const existing = integrations.find((i) => i.integration_type === type);
+                              const updated = integrations.map((i) =>
+                                i.integration_type === type
+                                  ? { ...i, config: { ...i.config, client_secret: e.target.value } }
+                                  : i
+                              );
+                              if (!existing) {
+                                setIntegrations([...integrations, {
+                                  id: crypto.randomUUID(),
+                                  integration_type: type,
+                                  api_key: null,
+                                  webhook_url: null,
+                                  is_active: false,
+                                  config: { client_secret: e.target.value }
+                                }]);
+                              } else {
+                                setIntegrations(updated);
+                              }
+                            }}
+                          />
+                        </div>
+                      </>
+                    )}
+
+                    {type === "gemini" && (
+                      <div className="space-y-2">
+                        <Label htmlFor={`${type}-key`}>API Key</Label>
+                        <Input
+                          id={`${type}-key`}
+                          type="password"
+                          placeholder="Enter your Gemini API key"
+                          value={getIntegrationValue(type, "api_key") as string}
+                          onChange={(e) =>
+                            updateIntegration(type, "api_key", e.target.value)
                           }
                         />
                       </div>
@@ -234,13 +344,19 @@ export default function Settings() {
             <div>
               <h4 className="font-semibold mb-1">Twitter/X</h4>
               <p className="text-muted-foreground">
-                Apply for Twitter API access and generate your API keys from the Developer Portal.
+                Get a Bearer Token from the Twitter Developer Portal. Requires Essential access.
               </p>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">Other Integrations</h4>
+              <h4 className="font-semibold mb-1">Reddit</h4>
               <p className="text-muted-foreground">
-                Visit each service's developer documentation to obtain your API credentials.
+                Create an app at reddit.com/prefs/apps to get your Client ID and Secret.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">Google Gemini</h4>
+              <p className="text-muted-foreground">
+                Get your API key from Google AI Studio (ai.google.dev).
               </p>
             </div>
           </CardContent>

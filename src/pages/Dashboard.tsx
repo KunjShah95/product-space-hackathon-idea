@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Bell, Settings, LogOut, AlertCircle } from "lucide-react";
+import { Bell, Settings, LogOut, AlertCircle, RefreshCw } from "lucide-react";
 
 interface Mention {
   id: string;
@@ -22,6 +22,7 @@ export default function Dashboard() {
   const [user, setUser] = useState<any>(null);
   const [mentions, setMentions] = useState<Mention[]>([]);
   const [loading, setLoading] = useState(true);
+  const [monitoring, setMonitoring] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -79,12 +80,47 @@ export default function Dashboard() {
     return "secondary";
   };
 
+  const handleMonitorNow = async () => {
+    setMonitoring(true);
+    try {
+      const { error } = await supabase.functions.invoke('monitor-mentions');
+      
+      if (error) throw error;
+      
+      toast({
+        title: "Monitoring started",
+        description: "Scanning for new mentions...",
+      });
+      
+      // Reload mentions after a short delay
+      setTimeout(() => {
+        loadMentions();
+        setMonitoring(false);
+      }, 3000);
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to start monitoring",
+      });
+      setMonitoring(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <h1 className="text-2xl font-heading font-bold">Dashboard</h1>
           <div className="flex gap-2">
+            <Button 
+              variant="outline" 
+              onClick={handleMonitorNow}
+              disabled={monitoring}
+            >
+              <RefreshCw className={`h-4 w-4 mr-2 ${monitoring ? 'animate-spin' : ''}`} />
+              {monitoring ? 'Monitoring...' : 'Monitor Now'}
+            </Button>
             <Button variant="ghost" size="icon" onClick={() => navigate("/settings")}>
               <Settings className="h-5 w-5" />
             </Button>
